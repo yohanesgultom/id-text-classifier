@@ -27,7 +27,7 @@ if __name__ == '__main__':
         cursor = db.cursor()
         cursor.execute(args.query)
         pprint(cursor.fetchall())
-    except ex as Exception:
+    except Exception as ex:
         print(traceback.format_exc())
     finally:
         db.close()
