@@ -7,6 +7,7 @@ import sys
 DATABASE_FILE = 'database.sqlite3'
 DEFAULT_QUERY = 'select * from titles order by crawled_at desc'
 FORBIDDEN_KEYWORDS = [ 'drop', 'truncate']
+COMMIT_KEYWORDS = [ 'insert', 'update', 'delete' ]
 
 if __name__ == '__main__':
 
@@ -26,7 +27,13 @@ if __name__ == '__main__':
     try:
         cursor = db.cursor()
         cursor.execute(args.query)
-        pprint(cursor.fetchall())
+        # need commit?
+        commits = [ keyword for keyword in COMMIT_KEYWORDS if keyword in args.query.lower().split() ]
+        if commits:            
+            db.commit()
+            print('success')
+        else:
+            pprint(cursor.fetchall())
     except Exception as ex:
         print(traceback.format_exc())
     finally:
