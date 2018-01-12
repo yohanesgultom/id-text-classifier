@@ -39,8 +39,8 @@ if __name__ == '__main__':
   db = sqlite3.connect(config.get('APP', 'SQLITE3_DB'))
   cursor = db.cursor()
 
-  # fetch one oldest record
-  cursor.execute('''SELECT * FROM titles WHERE posted_at IS NULL ORDER BY crawled_at ASC LIMIT 1''')
+  # fetch one most recent record
+  cursor.execute('''SELECT * FROM titles WHERE posted_at IS NULL ORDER BY crawled_at DESC LIMIT 1''')
   record = cursor.fetchone()
 
   if record:
