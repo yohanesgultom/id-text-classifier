@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 class DetikCrawler(BaseCrawler):
     def __init__(self):
-        self.url = 'https://finance.detik.com/indeks/berita-ekonomi-bisnis'
+        self.url = 'https://finance.detik.com/ekonomi-bisnis/indeks'
         self.list_selector = 'article a'
 
     @staticmethod
