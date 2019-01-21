@@ -10,6 +10,7 @@
 [Ss]hare
 pyvenv.cfg
 .venv
+venv
 pip-selfcheck.json
 **/*.pyc
 .~lock.*

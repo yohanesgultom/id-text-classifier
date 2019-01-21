@@ -5,6 +5,11 @@ Simple Indonesian text classifier using [Sklearn Pipeline](http://scikit-learn.o
 1. TF-IDF vectorization with SGD Classifier (linear SVM) (default) [3]: 77% F1-score with small model size (< 800 KB)
 2. Word2Vec x TF-IDF vectorization with RBF SVM [4]: 86% F1-score but with huge model size (> 1 GB) due to encapsulation of [FastText pretrained word vectors](https://github.com/facebookresearch/fastText/blob/master/pretrained-vectors.md) (> 750 MB)
 
+## Dependencies
+
+* Python >= 2.7.x (not compatible yet with 3.x)
+* Sqlite3
+
 ## Usage
 
 ### Training
@@ -78,6 +83,7 @@ $ python crawl.py
 * Replace stemming with lemmatizer
 * Add more crawling sources
 * Try reinforcement learning instead of supervised learning
+* Migrate to Python 3.x
 
 ## References
 
