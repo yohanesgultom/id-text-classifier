@@ -5,7 +5,7 @@ Kompas news titles and links crawler
 
 import requests
 import traceback
-from BaseCrawler import BaseCrawler
+from crawler.BaseCrawler import BaseCrawler
 from bs4 import BeautifulSoup
 
 class KompasCrawler(BaseCrawler):
@@ -28,7 +28,7 @@ class KompasCrawler(BaseCrawler):
         for a in tags:
             try:
                 # remove unicode chars and whitelines
-                titles.append(a.text.encode('utf-8').strip())
+                titles.append(a.text.strip().encode('utf-8').decode())
                 links.append(a['href'])
             except Exception as e:
                 if not silent:

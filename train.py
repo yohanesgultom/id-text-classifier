@@ -28,7 +28,7 @@ STOPWORDS_FILE = 'stopwords-id.txt'
 RAW_DATASET_FILE = 'dataset_labeled.csv'
 WORD2VEC_FILE = 'w2v.pkl'
 # Facebook Research pretrained word2vec https://github.com/facebookresearch/fastText/blob/master/pretrained-vectors.md
-WORD2VEC_C_FILE = '/home/yohanesgultom/Downloads/wiki.id.vec'
+WORD2VEC_C_FILE = 'wiki.id.vec'
 MODEL_OUTPUT_FILE = 'model.pkl'
 
 
@@ -40,7 +40,7 @@ class TfidfEmbeddingVectorizer(BaseEstimator, TransformerMixin):
     def __init__(self, word2vec):
         self.word2vec = word2vec
         self.word2weight = None
-        self.dim = len(word2vec.itervalues().next())
+        self.dim = len(next(iter(word2vec.values())))
 
     def fit(self, X, y=None):
         tfidf = TfidfVectorizer(analyzer=lambda x: x)
@@ -148,7 +148,7 @@ def cross_validate_result_tabular_report(results, keys=None, decimals=4):
         print('\t'.join([str(i)] + row))                    
     print('')
     # average
-    row_avg = [str(results[key].mean()) for key in keys]
+    row_avg = [str(round(results[key].mean(), decimals)) for key in keys]
     print('\t'.join(['Avg'] + row_avg))
     print('')
 
@@ -227,12 +227,13 @@ if __name__ == '__main__':
     parser.add_argument('-m', '--model', default=models['tfidf-lsvm'], choices=models.values(), help='Pipeline model')
     parser.add_argument('-o', '--output', help='path to save the trained model pickle file (model.pkl)')
     parser.add_argument('-s', '--silent', action='store_true', default=False, help='display no log in console')
+    parser.add_argument('-e', '--embedding', default=WORD2VEC_C_FILE, help='Word2vec vector file')
     args = parser.parse_args()
 
     # load dataset
     X = []
     y = []  
-    with open(RAW_DATASET_FILE, 'rb') as f:
+    with open(RAW_DATASET_FILE, 'r') as f:
         reader = csv.reader(f, delimiter='\t')
         for row in reader:
             X.append(row[0])
@@ -245,20 +246,6 @@ if __name__ == '__main__':
         preprocessor = SimpleIndonesianPreprocessor(verbose=verbose)
         vectorizer = TfidfVectorizer(tokenizer=identity, preprocessor=None, lowercase=False)
         classifier = SGDClassifier(max_iter=100, tol=None)    
-        """
-        Classifier: SGDClassifier
-        No      test_pos_f1     test_pos_precision      test_pos_recall test_neg_f1     test_neg_precision      test_neg_recall
-        0       0.7778  1.0     0.6364  0.8947  0.8095  1.0
-        1       0.8421  1.0     0.7273  0.9189  0.85    1.0
-        2       0.7778  1.0     0.6364  0.8947  0.8095  1.0
-        3       0.7059  1.0     0.5455  0.8718  0.7727  1.0
-        4       0.8421  1.0     0.7273  0.9189  0.85    1.0
-        5       0.9524  1.0     0.9091  0.9714  0.9444  1.0
-        6       0.8421  1.0     0.7273  0.9143  0.8421  1.0
-        7       0.2857  0.6667  0.1818  0.75    0.625   0.9375
-
-        Avg     0.753231117008  0.958333333333  0.636363636364  0.891852584945  0.812915574922  0.9921875    
-        """
 
     # pipeline model 2
     elif args.model == models['w2v-rbfsvm']:
@@ -272,21 +259,6 @@ if __name__ == '__main__':
         w2v = dict(zip(wv.index2word, wv.syn0))
         vectorizer = TfidfEmbeddingVectorizer(w2v)
         classifier = SVC()
-        """
-        Classifier: SVC
-
-        No      test_pos_f1     test_pos_precision      test_pos_recall test_neg_f1     test_neg_precision      test_neg_recall
-        0       0.9091  0.9091  0.9091  0.9412  0.9412  0.9412
-        1       0.9524  1.0     0.9091  0.9714  0.9444  1.0
-        2       0.9565  0.9167  1.0     0.9697  1.0     0.9412
-        3       0.6667  0.8571  0.5455  0.8421  0.7619  0.9412
-        4       0.9524  1.0     0.9091  0.9714  0.9444  1.0
-        5       0.9524  1.0     0.9091  0.9714  0.9444  1.0
-        6       0.8571  0.9     0.8182  0.9091  0.8824  0.9375
-        7       0.7     0.7778  0.6364  0.8235  0.7778  0.875
-
-        Avg     0.868320628647  0.920084776335  0.829545454545  0.924985592323  0.899568160598  0.954503676471
-        """
 
     else:
         print('Unknown model:' + args.model)

@@ -1,7 +1,5 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
-class BaseCrawler:
-    __metaclass__ = ABCMeta
-
+class BaseCrawler(ABC):
     @abstractmethod
     def crawl(self, silent=False): raise NotImplementedError

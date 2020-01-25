@@ -21,3 +21,4 @@ dataset_unlabeled.csv
 database.sqlite3
 w2v.pkl
 model.w2v.rbfsvm.pkl
+*.vec

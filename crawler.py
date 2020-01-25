@@ -1,6 +1,6 @@
 import requests
 import pickle
-import ConfigParser
+import configparser
 import sqlite3
 import traceback
 import argparse
@@ -17,7 +17,7 @@ from crawler import (
 
 CONFIG_FILE='.config'
 
-config = ConfigParser.ConfigParser()
+config = configparser.ConfigParser()
 config.readfp(open(CONFIG_FILE))
 
 if __name__ == '__main__':    

@@ -11,7 +11,8 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 # config
 RAW_DATASET_FILE = 'dataset_labeled.csv'
 STOPWORDS_FILE = 'stopwords-id.txt'
-OUT_PATH = 'w2v.pkl'
+# OUT_PATH = 'database_labeled.pkl'
+OUT_PATH = 'database_labeled.vec'
 VECTOR_SIZE = 30
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
@@ -34,7 +35,7 @@ class Dataset(object):
         
     
     def __iter__(self):
-        with open(self.csv_file, 'rb') as f:
+        with open(self.csv_file, 'r') as f:
             reader = csv.reader(f, delimiter='\t')
             for row in reader:
                 sentence = []
@@ -58,7 +59,20 @@ if __name__ == '__main__':
     assert model.wv['bawang'].shape[0] == VECTOR_SIZE
 
     # save to file
-    w2v = dict(zip(model.wv.index2word, model.wv.syn0))
-    with open(OUT_PATH, 'wb') as f:
-        pickle.dump(w2v, f)
-        print('Word2vec model saved in {}'.format(OUT_PATH))
+    # Reference: https://github.com/facebookresearch/fastText/blob/master/python/doc/examples/bin_to_vec.py
+    with open(OUT_PATH, 'w') as f:
+        vocab_length = len(model.wv.index2word)
+        f.write('{} {}\n'.format(vocab_length, VECTOR_SIZE))
+        for i in range(vocab_length):
+            w = model.wv.index2word[i]
+            vstr = ''
+            for vi in model.wv.syn0[i]:
+                vstr += ' ' + str(vi)
+            try:
+                f.write(w + vstr + '\n')
+            except IOError as e:
+                if e.errno == errno.EPIPE:
+                    pass
+            
+
+        
