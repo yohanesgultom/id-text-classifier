@@ -18,7 +18,7 @@ requests==2.31.0
 s3transfer==0.3.2
 Sastrawi==1.0.1
 scikit-learn==0.22.1
-scipy==1.4.1
+scipy==1.10.0
 six==1.14.0
 smart-open==1.9.0
 soupsieve==1.9.5
